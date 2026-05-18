@@ -168,6 +168,7 @@ input {
   margin: 0 auto;
   touch-action: none;
   user-select: none;
+  cursor: crosshair;
 }
 
 .court-bg {
@@ -212,6 +213,18 @@ input {
   fill: rgba(23, 32, 42, 0.62);
   font-size: 13px;
   font-weight: 900;
+}
+
+.movement-arrow {
+  pointer-events: none;
+}
+
+.movement-arrow line {
+  stroke: #17373d;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 12 9;
+  opacity: 0.72;
 }
 
 .player-token {

@@ -80,6 +80,30 @@ function interpolatePosition(a, b, t) {
   };
 }
 
+function movementArrow(from, to, inset = 34) {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const distance = Math.hypot(dx, dy);
+  if (distance < inset * 1.8) return null;
+
+  const unitX = dx / distance;
+  const unitY = dy / distance;
+  const endX = to.x - unitX * inset;
+  const endY = to.y - unitY * inset;
+  const startX = from.x + unitX * inset;
+  const startY = from.y + unitY * inset;
+  const angle = Math.atan2(dy, dx);
+
+  return {
+    line: { x1: startX, y1: startY, x2: endX, y2: endY },
+    head: [
+      { x: endX, y: endY },
+      { x: endX - Math.cos(angle - 0.52) * 16, y: endY - Math.sin(angle - 0.52) * 16 },
+      { x: endX - Math.cos(angle + 0.52) * 16, y: endY - Math.sin(angle + 0.52) * 16 },
+    ],
+  };
+}
+
 function drawCourt(ctx, project, positions, selectedId = null, viewport = VIEW) {
   const dprScale = 2;
   ctx.save();
@@ -157,7 +181,20 @@ function App() {
   const fileRef = useRef(null);
 
   const currentFrame = project.frames[currentFrameIndex] || project.frames[0];
+  const previousFrame = currentFrameIndex > 0 ? project.frames[currentFrameIndex - 1] : null;
   const selectedPlayer = project.players.find((player) => player.id === selectedId) || project.players[0];
+  const movementArrows = useMemo(() => {
+    if (!previousFrame || isPlaying) return [];
+    return project.players
+      .map((player) => ({
+        player,
+        arrow:
+          previousFrame.positions[player.id] && currentFrame.positions[player.id]
+            ? movementArrow(previousFrame.positions[player.id], currentFrame.positions[player.id])
+            : null,
+      }))
+      .filter((item) => item.arrow);
+  }, [currentFrame.positions, isPlaying, previousFrame, project.players]);
 
   const displayedPositions = useMemo(() => {
     if (!isPlaying || project.frames.length < 2) return currentFrame.positions;
@@ -227,6 +264,26 @@ function App() {
     if (!draggingId) return;
     const pos = pointFromEvent(event);
     updateCurrentFramePositions({ ...currentFrame.positions, [draggingId]: pos });
+  }
+
+  function moveSelectedPlayer(event) {
+    if (draggingId || !selectedId || event.target.closest('.player-token')) return;
+    const pos = pointFromEvent(event);
+    updateCurrentFramePositions({ ...currentFrame.positions, [selectedId]: pos });
+  }
+
+  function playSimulation() {
+    if (isPlaying) {
+      setIsPlaying(false);
+      return;
+    }
+    if (project.frames.length < 2) {
+      setNotice('Add a second frame to simulate movement');
+      return;
+    }
+    setCurrentFrameIndex(0);
+    setPlayhead(0);
+    setIsPlaying(true);
   }
 
   function addFrame() {
@@ -395,10 +452,7 @@ function App() {
             <button
               className="primary"
               title={isPlaying ? 'Stop' : 'Play'}
-              onClick={() => {
-                setPlayhead(currentFrameIndex);
-                setIsPlaying((value) => !value);
-              }}
+              onClick={playSimulation}
             >
               {isPlaying ? <Square size={18} /> : <Play size={18} />}
             </button>
@@ -437,11 +491,15 @@ function App() {
             viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.width} ${VIEW.height}`}
             role="img"
             aria-label="Volleyball court editor"
+            onPointerDown={moveSelectedPlayer}
             onPointerMove={onPointerMove}
             onPointerUp={() => setDraggingId(null)}
             onPointerLeave={() => setDraggingId(null)}
           >
             <defs>
+              <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+                <path d="M2 2L10 6L2 10Z" fill="#17373d" />
+              </marker>
               <pattern id="wood" width="80" height="80" patternUnits="userSpaceOnUse">
                 <rect width="80" height="80" fill="#c98a4a" />
                 <path d="M0 12H80M0 40H80M0 68H80" stroke="rgba(255,255,255,.12)" strokeWidth="1" />
@@ -458,6 +516,11 @@ function App() {
             <text className="zone-label" x={COURT.pad + 18} y={COURT.height - COURT.pad - 22}>Back Row</text>
             <text className="zone-label" x={COURT.pad + 18} y={NET_Y + 34}>Front Row</text>
             <text className="net-label" x={COURT.width / 2} y={NET_Y - 14} textAnchor="middle">NET</text>
+            {movementArrows.map(({ player, arrow }) => (
+              <g key={`arrow-${player.id}`} className="movement-arrow">
+                <line {...arrow.line} markerEnd="url(#arrowhead)" />
+              </g>
+            ))}
             {project.players.map((player) => {
               const pos = displayedPositions[player.id];
               if (!pos) return null;
@@ -467,6 +530,7 @@ function App() {
                   className={`player-token ${selectedId === player.id ? 'selected' : ''}`}
                   transform={`translate(${pos.x} ${pos.y})`}
                   onPointerDown={(event) => {
+                    event.stopPropagation();
                     event.currentTarget.setPointerCapture(event.pointerId);
                     setSelectedId(player.id);
                     setDraggingId(player.id);
