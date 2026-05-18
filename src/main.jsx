@@ -104,6 +104,19 @@ function movementArrow(from, to, inset = 34) {
   };
 }
 
+function hasFrameMovement(project) {
+  return project.frames.some((frame, index) => {
+    if (index === 0) return false;
+    const previous = project.frames[index - 1];
+    return project.players.some((player) => {
+      const from = previous.positions[player.id];
+      const to = frame.positions[player.id];
+      if (!from || !to) return false;
+      return Math.hypot(to.x - from.x, to.y - from.y) > 2;
+    });
+  });
+}
+
 function drawCourt(ctx, project, positions, selectedId = null, viewport = VIEW) {
   const dprScale = 2;
   ctx.save();
@@ -221,6 +234,10 @@ function App() {
   }, [project]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
+  }, []);
+
+  useEffect(() => {
     if (!isPlaying) return undefined;
     let animationId;
     let last = performance.now();
@@ -278,7 +295,12 @@ function App() {
       return;
     }
     if (project.frames.length < 2) {
-      setNotice('Add a second frame to simulate movement');
+      addFrame();
+      setNotice('Frame 2 created. Move players, then press Play');
+      return;
+    }
+    if (!hasFrameMovement(project)) {
+      setNotice('Move a player in another frame before playing');
       return;
     }
     setCurrentFrameIndex(0);
