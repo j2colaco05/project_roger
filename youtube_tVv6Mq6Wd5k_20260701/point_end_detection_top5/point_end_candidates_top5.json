@@ -1,0 +1,202 @@
+[
+  {
+    "point_id": "P028",
+    "start_window_offset": "14:36.5",
+    "start_source_timestamp": "02:57:00.5",
+    "duration_seconds": 76.5,
+    "range_end_source_timestamp": "02:58:17.0",
+    "candidate_review_sheet": "P028_76.5s_point_end_candidates.jpg",
+    "point_end_candidates": [
+      {
+        "offset": 914.5,
+        "score": 5.734,
+        "drop": 3.103,
+        "before_motion": 6.85,
+        "after_motion": 3.747,
+        "window_offset": "15:14.5",
+        "source_timestamp": "02:57:38.5",
+        "estimated_rally_duration_seconds": 38.0
+      },
+      {
+        "offset": 932.0,
+        "score": 2.558,
+        "drop": 1.571,
+        "before_motion": 4.844,
+        "after_motion": 3.273,
+        "window_offset": "15:32.0",
+        "source_timestamp": "02:57:56.0",
+        "estimated_rally_duration_seconds": 55.5
+      },
+      {
+        "offset": 936.0,
+        "score": 1.294,
+        "drop": 0.895,
+        "before_motion": 3.418,
+        "after_motion": 2.523,
+        "window_offset": "15:36.0",
+        "source_timestamp": "02:58:00.0",
+        "estimated_rally_duration_seconds": 59.5
+      }
+    ]
+  },
+  {
+    "point_id": "P004",
+    "start_window_offset": "01:38.0",
+    "start_source_timestamp": "02:44:02.0",
+    "duration_seconds": 62.5,
+    "range_end_source_timestamp": "02:45:04.5",
+    "candidate_review_sheet": "P004_62.5s_point_end_candidates.jpg",
+    "point_end_candidates": [
+      {
+        "offset": 119.0,
+        "score": 1.953,
+        "drop": 1.172,
+        "before_motion": 3.434,
+        "after_motion": 2.262,
+        "window_offset": "01:59.0",
+        "source_timestamp": "02:44:23.0",
+        "estimated_rally_duration_seconds": 21.0
+      },
+      {
+        "offset": 130.0,
+        "score": 1.617,
+        "drop": 1.039,
+        "before_motion": 3.503,
+        "after_motion": 2.464,
+        "window_offset": "02:10.0",
+        "source_timestamp": "02:44:34.0",
+        "estimated_rally_duration_seconds": 32.0
+      },
+      {
+        "offset": 155.5,
+        "score": 3.726,
+        "drop": 2.044,
+        "before_motion": 4.721,
+        "after_motion": 2.677,
+        "window_offset": "02:35.5",
+        "source_timestamp": "02:44:59.5",
+        "estimated_rally_duration_seconds": 57.5
+      }
+    ]
+  },
+  {
+    "point_id": "P018",
+    "start_window_offset": "09:37.5",
+    "start_source_timestamp": "02:52:01.5",
+    "duration_seconds": 57.5,
+    "range_end_source_timestamp": "02:52:59.0",
+    "candidate_review_sheet": "P018_57.5s_point_end_candidates.jpg",
+    "point_end_candidates": [
+      {
+        "offset": 586.0,
+        "score": 5.931,
+        "drop": 3.177,
+        "before_motion": 6.776,
+        "after_motion": 3.599,
+        "window_offset": "09:46.0",
+        "source_timestamp": "02:52:10.0",
+        "estimated_rally_duration_seconds": 8.5
+      },
+      {
+        "offset": 595.5,
+        "score": 1.386,
+        "drop": 0.876,
+        "before_motion": 2.862,
+        "after_motion": 1.987,
+        "window_offset": "09:55.5",
+        "source_timestamp": "02:52:19.5",
+        "estimated_rally_duration_seconds": 18.0
+      },
+      {
+        "offset": 618.0,
+        "score": 3.015,
+        "drop": 1.708,
+        "before_motion": 4.335,
+        "after_motion": 2.627,
+        "window_offset": "10:18.0",
+        "source_timestamp": "02:52:42.0",
+        "estimated_rally_duration_seconds": 40.5
+      }
+    ]
+  },
+  {
+    "point_id": "P007",
+    "start_window_offset": "04:01.0",
+    "start_source_timestamp": "02:46:25.0",
+    "duration_seconds": 55.0,
+    "range_end_source_timestamp": "02:47:20.0",
+    "candidate_review_sheet": "P007_55.0s_point_end_candidates.jpg",
+    "point_end_candidates": [
+      {
+        "offset": 248.5,
+        "score": 4.718,
+        "drop": 2.531,
+        "before_motion": 5.424,
+        "after_motion": 2.893,
+        "window_offset": "04:08.5",
+        "source_timestamp": "02:46:32.5",
+        "estimated_rally_duration_seconds": 7.5
+      },
+      {
+        "offset": 262.0,
+        "score": 0.53,
+        "drop": 0.57,
+        "before_motion": 3.349,
+        "after_motion": 2.78,
+        "window_offset": "04:22.0",
+        "source_timestamp": "02:46:46.0",
+        "estimated_rally_duration_seconds": 21.0
+      },
+      {
+        "offset": 287.5,
+        "score": 3.086,
+        "drop": 1.716,
+        "before_motion": 4.124,
+        "after_motion": 2.408,
+        "window_offset": "04:47.5",
+        "source_timestamp": "02:47:11.5",
+        "estimated_rally_duration_seconds": 46.5
+      }
+    ]
+  },
+  {
+    "point_id": "P006",
+    "start_window_offset": "03:09.5",
+    "start_source_timestamp": "02:45:33.5",
+    "duration_seconds": 51.5,
+    "range_end_source_timestamp": "02:46:25.0",
+    "candidate_review_sheet": "P006_51.5s_point_end_candidates.jpg",
+    "point_end_candidates": [
+      {
+        "offset": 197.5,
+        "score": 5.805,
+        "drop": 3.033,
+        "before_motion": 5.893,
+        "after_motion": 2.86,
+        "window_offset": "03:17.5",
+        "source_timestamp": "02:45:41.5",
+        "estimated_rally_duration_seconds": 8.0
+      },
+      {
+        "offset": 213.5,
+        "score": 0.269,
+        "drop": 0.546,
+        "before_motion": 4.167,
+        "after_motion": 3.621,
+        "window_offset": "03:33.5",
+        "source_timestamp": "02:45:57.5",
+        "estimated_rally_duration_seconds": 24.0
+      },
+      {
+        "offset": 225.5,
+        "score": 0.926,
+        "drop": 0.748,
+        "before_motion": 3.48,
+        "after_motion": 2.732,
+        "window_offset": "03:45.5",
+        "source_timestamp": "02:46:09.5",
+        "estimated_rally_duration_seconds": 36.0
+      }
+    ]
+  }
+]

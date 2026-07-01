@@ -1,0 +1,30 @@
+point_id,window_start_offset,source_start_timestamp,source_end_timestamp,rally_duration_seconds,confidence,review_flags,notes,manual_review_status,manual_review_notes
+P001,00:08.0,02:42:32.0,02:42:41.5,9.5,high,short_point,original start; quick point ends before hidden serve,confirmed,Serve/rally/end visible; old bucket correctly split before P002.
+P002,00:22.0,02:42:46.0,02:42:53.0,7.0,medium,short_point,inserted missed serve inside old P001; end estimated from reset/next serve setup,confirmed,Inserted missed quick point looks valid; starts with serve sequence and ends before P003 setup.
+P003,00:37.5,02:43:01.5,02:43:29.5,28.0,high,,old P002; existing serve start kept,confirmed,"Starts with serve; one continuous point, no hidden serve."
+P004,01:07.0,02:43:31.0,02:43:50.0,19.0,high,,old P003; late candidate selected after early false positives,confirmed,"Starts with serve; later end is correct, early motion drops were false positives during live play."
+P005,01:38.0,02:44:02.0,02:44:59.5,57.5,medium,long_rally,"old P004; long rally, no hidden serve confirmed on timeline sheet",confirmed_long,True long rally; no hidden serve seen in 0.5s sheet.
+P006,02:40.5,02:45:04.5,02:45:26.5,22.0,high,,old P005; rally end estimated from reset before next serve,confirmed,"Starts with serve; one point, no hidden serve."
+P007,03:09.5,02:45:33.5,02:46:10.0,36.5,medium,long_rally,"old P006; 0.5s sheet shows one rally, not multiple serves",confirmed_long,Long setup/rally but continuous; no hidden serve.
+P008,04:01.0,02:46:25.0,02:47:11.5,46.5,medium,long_rally,"old P007; long rally, later candidate selected",confirmed_long,"True long rally, no hidden serve; end selected from later dead-ball posture."
+P009,04:56.0,02:47:20.0,02:47:29.0,9.0,low,review_low_confidence;short_point,"old P008; no motion candidate, short visual estimate",review_start,"Short point remains low confidence; start frame is not a clean serve-contact view, but range fits a quick point before P010."
+P010,05:08.0,02:47:32.0,02:47:56.5,24.5,medium,,old P009; later candidate selected after early false positives,confirmed,Starts with serve; one continuous point.
+P011,05:47.0,02:48:11.0,02:48:34.0,23.0,medium,,old P010; late candidate selected,confirmed,Starts with serve routine; one continuous point.
+P012,06:19.5,02:48:43.5,02:48:52.0,8.5,high,short_point,old P011; quick point candidate,confirmed_short,Quick point; serve and reset are visible enough.
+P013,06:33.0,02:48:57.0,02:49:16.5,19.5,medium,,"old P012; one point plus long reset, no hidden serve confirmed",confirmed,Starts with serve; no hidden serve.
+P014,07:24.5,02:49:48.5,02:50:05.0,16.5,high,,old P013; later candidate selected,confirmed,Starts with serve; one continuous point.
+P015,07:46.0,02:50:10.0,02:50:42.0,32.0,low,review_low_confidence;long_rally,"old P014; continuous play close to next serve, needs clip review",review_end,"Continuous point, but end boundary is visually tight near next setup; keep review flag."
+P016,08:19.5,02:50:43.5,02:51:06.5,23.0,medium,,old P015; rally end estimated before next serve setup,confirmed,Starts with serve; rally/end look consistent.
+P017,08:48.0,02:51:12.0,02:51:25.5,13.5,high,,old P016; late candidate selected,confirmed,Short/normal point; serve and end look consistent.
+P018,09:06.5,02:51:30.5,02:51:56.5,26.0,medium,,old P017; later candidate selected,confirmed,Starts with serve; one continuous point.
+P019,09:37.5,02:52:01.5,02:52:56.0,54.5,low,review_low_confidence;long_rally,"old P018; long live rally, no hidden serve confirmed; end near next start",review_end_long,"True long rally; no hidden serve seen, but rally end is close to next start and should be clip-reviewed."
+P020,10:35.0,02:52:59.0,02:53:26.5,27.5,medium,,old P019; later candidate selected,confirmed,Starts with serve; one continuous point.
+P021,11:10.5,02:53:34.5,02:53:46.0,11.5,high,short_point,old P020; quick point,confirmed_short,Quick point; serve and end visible.
+P022,11:27.0,02:53:51.0,02:54:00.0,9.0,high,short_point,old P021; quick point,confirmed_short,Quick point; serve and end visible.
+P023,11:44.5,02:54:08.5,02:54:21.5,13.0,medium,,old P022; later candidate selected,confirmed,Starts with serve; one continuous point.
+P024,12:07.5,02:54:31.5,02:55:00.5,29.0,medium,,old P023; later candidate selected,confirmed,"Starts with serve; one continuous point, no hidden serve."
+P025,12:46.0,02:55:10.0,02:55:31.0,21.0,low,review_low_confidence,old P024; visual estimate after late rally action,review_end,"Starts with serve; no hidden serve, but end boundary should be clip-reviewed."
+P026,13:10.0,02:55:34.0,02:55:56.0,22.0,medium,,old P025; later candidate selected,confirmed,Starts with serve; one continuous point.
+P027,13:39.5,02:56:03.5,02:56:26.5,23.0,medium,,old P026; later candidate selected,confirmed,Starts with serve; one continuous point.
+P028,14:10.0,02:56:34.0,02:56:51.5,17.5,medium,,old P027; later candidate selected,confirmed,Starts with serve; one continuous point.
+P029,14:36.5,02:57:00.5,02:57:38.5,38.0,medium,long_rally,old P028; final rally end before post-game wrap-up,confirmed_long,Final long rally; end before post-game/wrap-up looks plausible.

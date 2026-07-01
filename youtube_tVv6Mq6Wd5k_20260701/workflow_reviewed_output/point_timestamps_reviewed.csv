@@ -1,0 +1,30 @@
+point_id,window_start_offset,source_start_timestamp,source_end_timestamp,rally_duration_seconds,duration_to_next_start_or_window_end_seconds,reset_gap_to_next_start_seconds,confidence,manual_review_status,validation_flags,notes
+P001,00:08.0,02:42:32.0,02:42:41.5,9.5,14.0,4.5,high,confirmed,short_point,Serve/rally/end visible; old bucket correctly split before P002.
+P002,00:22.0,02:42:46.0,02:42:53.0,7.0,15.5,8.5,medium,confirmed,short_point,Inserted missed quick point looks valid; starts with serve sequence and ends before P003 setup.
+P003,00:37.5,02:43:01.5,02:43:29.5,28.0,29.5,1.5,high,confirmed,,"Starts with serve; one continuous point, no hidden serve."
+P004,01:07.0,02:43:31.0,02:43:50.0,19.0,31.0,12.0,high,confirmed,,"Starts with serve; later end is correct, early motion drops were false positives during live play."
+P005,01:38.0,02:44:02.0,02:44:59.5,57.5,62.5,5.0,medium,confirmed_long,review_long_rally,True long rally; no hidden serve seen in 0.5s sheet.
+P006,02:40.5,02:45:04.5,02:45:26.5,22.0,29.0,7.0,high,confirmed,,"Starts with serve; one point, no hidden serve."
+P007,03:09.5,02:45:33.5,02:46:10.0,36.5,51.5,15.0,medium,confirmed_long,review_long_rally,Long setup/rally but continuous; no hidden serve.
+P008,04:01.0,02:46:25.0,02:47:11.5,46.5,55.0,8.5,medium,confirmed_long,review_long_rally,"True long rally, no hidden serve; end selected from later dead-ball posture."
+P009,04:56.0,02:47:20.0,02:47:29.0,9.0,12.0,3.0,low,review_start,short_point;review_start,"Short point remains low confidence; start frame is not a clean serve-contact view, but range fits a quick point before P010."
+P010,05:08.0,02:47:32.0,02:47:56.5,24.5,39.0,14.5,medium,confirmed,,Starts with serve; one continuous point.
+P011,05:47.0,02:48:11.0,02:48:34.0,23.0,32.5,9.5,medium,confirmed,,Starts with serve routine; one continuous point.
+P012,06:19.5,02:48:43.5,02:48:52.0,8.5,13.5,5.0,high,confirmed_short,short_point,Quick point; serve and reset are visible enough.
+P013,06:33.0,02:48:57.0,02:49:16.5,19.5,51.5,32.0,medium,confirmed,,Starts with serve; no hidden serve.
+P014,07:24.5,02:49:48.5,02:50:05.0,16.5,21.5,5.0,high,confirmed,,Starts with serve; one continuous point.
+P015,07:46.0,02:50:10.0,02:50:42.0,32.0,33.5,1.5,low,review_end,review_long_rally;review_end,"Continuous point, but end boundary is visually tight near next setup; keep review flag."
+P016,08:19.5,02:50:43.5,02:51:06.5,23.0,28.5,5.5,medium,confirmed,,Starts with serve; rally/end look consistent.
+P017,08:48.0,02:51:12.0,02:51:25.5,13.5,18.5,5.0,high,confirmed,,Short/normal point; serve and end look consistent.
+P018,09:06.5,02:51:30.5,02:51:56.5,26.0,31.0,5.0,medium,confirmed,,Starts with serve; one continuous point.
+P019,09:37.5,02:52:01.5,02:52:56.0,54.5,57.5,3.0,low,review_end_long,review_long_rally;review_end_long,"True long rally; no hidden serve seen, but rally end is close to next start and should be clip-reviewed."
+P020,10:35.0,02:52:59.0,02:53:26.5,27.5,35.5,8.0,medium,confirmed,,Starts with serve; one continuous point.
+P021,11:10.5,02:53:34.5,02:53:46.0,11.5,16.5,5.0,high,confirmed_short,short_point,Quick point; serve and end visible.
+P022,11:27.0,02:53:51.0,02:54:00.0,9.0,17.5,8.5,high,confirmed_short,short_point,Quick point; serve and end visible.
+P023,11:44.5,02:54:08.5,02:54:21.5,13.0,23.0,10.0,medium,confirmed,,Starts with serve; one continuous point.
+P024,12:07.5,02:54:31.5,02:55:00.5,29.0,38.5,9.5,medium,confirmed,,"Starts with serve; one continuous point, no hidden serve."
+P025,12:46.0,02:55:10.0,02:55:31.0,21.0,24.0,3.0,low,review_end,review_end,"Starts with serve; no hidden serve, but end boundary should be clip-reviewed."
+P026,13:10.0,02:55:34.0,02:55:56.0,22.0,29.5,7.5,medium,confirmed,,Starts with serve; one continuous point.
+P027,13:39.5,02:56:03.5,02:56:26.5,23.0,30.5,7.5,medium,confirmed,,Starts with serve; one continuous point.
+P028,14:10.0,02:56:34.0,02:56:51.5,17.5,26.5,9.0,medium,confirmed,,Starts with serve; one continuous point.
+P029,14:36.5,02:57:00.5,02:57:38.5,38.0,76.5,38.5,medium,confirmed_long,review_long_rally,Final long rally; end before post-game/wrap-up looks plausible.

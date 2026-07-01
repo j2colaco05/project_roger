@@ -10,6 +10,8 @@ It can also support light coaching notes, but the center of the repo is the clip
 - CSV, Markdown, and JSON point index outputs
 - Duration validation rules for suspiciously long points
 - Short-point candidate checks for serve-won or quick points
+- Reviewed start/end timestamp outputs with confidence and review flags
+- Dense contact-sheet review for hidden serves and uncertain boundaries
 - Existing reviewed point timestamp datasets
 - Light team coaching reports and review notes
 - Portrait volleyball court with visible net and attack lines
@@ -53,5 +55,18 @@ python3 tools/youtube_point_timestamp_workflow.py \
 ```
 
 The workflow writes CSV, Markdown, and JSON point data. It can also flag suspicious long point ranges and check that the game includes a healthy number of short serve-won or quick points.
+
+When rally-end timestamps have been reviewed, use the richer reviewed workflow:
+
+```bash
+python3 tools/youtube_point_timestamp_workflow.py \
+  "https://www.youtube.com/watch?v=tVv6Mq6Wd5k" \
+  --game-start 02:42:24 \
+  --game-end 02:58:17 \
+  --from-reviewed-csv youtube_tVv6Mq6Wd5k_20260701/point_timestamps_visual_v3_manual_audit.csv \
+  --out-dir youtube_tVv6Mq6Wd5k_20260701/workflow_reviewed_output
+```
+
+This writes serve-start timestamps, rally-end timestamps, rally duration, start-to-next-start duration, reset gap, confidence, manual review status, and validation flags.
 
 See `docs/volleyball_point_timestamp_workflow.md` for the full output contract and validation rules.

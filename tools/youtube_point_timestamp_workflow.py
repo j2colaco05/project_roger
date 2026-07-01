@@ -23,6 +23,7 @@ from typing import Iterable
 class DurationValidationConfig:
     long_point_seconds: float = 30.0
     short_point_seconds: float = 18.0
+    short_rally_seconds: float = 12.0
     min_short_point_count: int = 3
     target_short_point_count: int = 4
     min_point_count: int = 25
@@ -95,6 +96,53 @@ def read_point_starts_from_csv(path: Path, column: str, game_start_seconds: floa
     return starts
 
 
+def read_reviewed_points_from_csv(path: Path, game_start_seconds: float) -> list[dict]:
+    """Read reviewed point rows that include both serve starts and rally ends."""
+
+    rows = list(csv.DictReader(path.open()))
+    if not rows:
+        return []
+
+    fields = set(rows[0].keys())
+    start_column = None
+    for candidate in ("source_start_timestamp", "source_timestamp", "start_timestamp", "window_offset"):
+        if candidate in fields:
+            start_column = candidate
+            break
+    end_column = None
+    for candidate in ("source_end_timestamp", "end_timestamp", "rally_end_timestamp"):
+        if candidate in fields:
+            end_column = candidate
+            break
+    if not start_column or not end_column:
+        raise ValueError(
+            "Reviewed point CSV must include start and end columns. "
+            "Expected source_start_timestamp/source_end_timestamp or compatible names."
+        )
+
+    reviewed = []
+    for index, row in enumerate(rows, start=1):
+        start = parse_timecode(row[start_column])
+        end = parse_timecode(row[end_column])
+        if start_column in {"window_offset", "start_seconds"}:
+            start += game_start_seconds
+        if end_column in {"window_end_offset", "end_seconds"}:
+            end += game_start_seconds
+        reviewed.append(
+            {
+                "point_id": row.get("point_id") or f"P{index:03d}",
+                "start_seconds": round(start - game_start_seconds, 1),
+                "end_seconds": round(end - game_start_seconds, 1),
+                "source_start_timestamp": format_time(start),
+                "source_end_timestamp": format_time(end),
+                "confidence": row.get("confidence", ""),
+                "manual_review_status": row.get("manual_review_status", ""),
+                "notes": row.get("manual_review_notes") or row.get("notes", ""),
+            }
+        )
+    return reviewed
+
+
 def normalize_starts(starts: Iterable[float], game_duration_seconds: float) -> list[float]:
     unique = sorted({round(float(start), 1) for start in starts})
     return [start for start in unique if 0 <= start <= game_duration_seconds]
@@ -120,6 +168,42 @@ def build_point_rows(
                 "duration_to_next_start_or_window_end_seconds": duration,
                 "validation_flags": "",
                 "notes": "",
+            }
+        )
+    return rows
+
+
+def build_reviewed_point_rows(
+    reviewed_points: Iterable[dict],
+    *,
+    game_start_seconds: float,
+    game_end_seconds: float,
+) -> list[dict]:
+    game_duration_seconds = game_end_seconds - game_start_seconds
+    reviewed = sorted(reviewed_points, key=lambda row: float(row["start_seconds"]))
+    rows = []
+    for index, point in enumerate(reviewed):
+        start = round(float(point["start_seconds"]), 1)
+        end = round(float(point["end_seconds"]), 1)
+        next_start = (
+            round(float(reviewed[index + 1]["start_seconds"]), 1)
+            if index + 1 < len(reviewed)
+            else game_duration_seconds
+        )
+        end = min(max(end, start), next_start)
+        rows.append(
+            {
+                "point_id": f"P{index + 1:03d}",
+                "window_start_offset": format_offset(start),
+                "source_start_timestamp": format_time(game_start_seconds + start),
+                "source_end_timestamp": format_time(game_start_seconds + end),
+                "rally_duration_seconds": round(end - start, 1),
+                "duration_to_next_start_or_window_end_seconds": round(next_start - start, 1),
+                "reset_gap_to_next_start_seconds": round(next_start - end, 1),
+                "confidence": point.get("confidence", ""),
+                "manual_review_status": point.get("manual_review_status", ""),
+                "validation_flags": "",
+                "notes": point.get("notes", ""),
             }
         )
     return rows
@@ -159,6 +243,59 @@ def validate_point_rows(rows: list[dict], config: DurationValidationConfig) -> d
         "long_point_ids": long_points,
         "short_point_candidate_ids": short_points,
         "short_point_count": len(short_points),
+        "config": asdict(config),
+    }
+
+
+def validate_reviewed_point_rows(rows: list[dict], config: DurationValidationConfig) -> dict:
+    long_points = []
+    short_points = []
+    review_points = []
+    possible_hidden_serve = []
+
+    for row in rows:
+        rally_duration = float(row["rally_duration_seconds"])
+        start_to_next = float(row["duration_to_next_start_or_window_end_seconds"])
+        review_status = row.get("manual_review_status", "")
+        flags = []
+        if rally_duration > config.long_point_seconds:
+            flags.append("review_long_rally")
+            long_points.append(row["point_id"])
+        if rally_duration <= config.short_rally_seconds:
+            flags.append("short_point")
+            short_points.append(row["point_id"])
+        if review_status.startswith("review"):
+            flags.append(review_status)
+            review_points.append(row["point_id"])
+        if start_to_next > config.long_point_seconds and rally_duration <= config.short_point_seconds:
+            flags.append("check_for_hidden_serve_or_long_reset")
+            possible_hidden_serve.append(row["point_id"])
+        row["validation_flags"] = ";".join(flags)
+
+    issues = []
+    point_count = len(rows)
+    if point_count < config.min_point_count or point_count > config.max_point_count:
+        issues.append(
+            f"point_count_out_of_expected_range:{point_count} "
+            f"not in {config.min_point_count}-{config.max_point_count}"
+        )
+    if len(short_points) < config.min_short_point_count:
+        issues.append(
+            f"too_few_short_points:{len(short_points)} "
+            f"expected_at_least_{config.min_short_point_count}"
+        )
+    if review_points:
+        issues.append(f"manual_review_required:{','.join(review_points)}")
+
+    return {
+        "status": "needs_review" if issues or long_points else "passed",
+        "issues": issues,
+        "point_count": point_count,
+        "long_rally_ids": long_points,
+        "short_point_ids": short_points,
+        "short_point_count": len(short_points),
+        "manual_review_required_ids": review_points,
+        "possible_hidden_serve_or_long_reset_ids": possible_hidden_serve,
         "config": asdict(config),
     }
 
@@ -243,6 +380,106 @@ def write_outputs(
                 "",
                 f"- Long point ids: {', '.join(validation_summary['long_point_ids']) or 'none'}",
                 f"- Short point candidates: {', '.join(validation_summary['short_point_candidate_ids']) or 'none'}",
+                f"- Issues: {', '.join(validation_summary['issues']) or 'none'}",
+            ]
+        )
+    md_path.write_text("\n".join(lines) + "\n")
+
+    return {"csv": str(csv_path), "markdown": str(md_path), "json": str(json_path)}
+
+
+def write_reviewed_outputs(
+    rows: list[dict],
+    *,
+    out_dir: Path,
+    youtube_url: str,
+    game_start: str,
+    game_end: str,
+    validation_summary: dict | None,
+    config: DurationValidationConfig,
+) -> dict:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = out_dir / "point_timestamps_reviewed.csv"
+    md_path = out_dir / "point_timestamps_reviewed.md"
+    json_path = out_dir / "point_timestamps_reviewed.json"
+
+    csv_fields = [
+        "point_id",
+        "window_start_offset",
+        "source_start_timestamp",
+        "source_end_timestamp",
+        "rally_duration_seconds",
+        "duration_to_next_start_or_window_end_seconds",
+        "reset_gap_to_next_start_seconds",
+        "confidence",
+        "manual_review_status",
+        "validation_flags",
+        "notes",
+    ]
+    with csv_path.open("w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=csv_fields)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    payload = {
+        "youtube_url": youtube_url,
+        "game_start": game_start,
+        "game_end": game_end,
+        "point_count": len(rows),
+        "validation": validation_summary
+        or {
+            "status": "configured_not_run",
+            "config": asdict(config),
+        },
+        "points": rows,
+    }
+    json_path.write_text(json.dumps(payload, indent=2))
+
+    validation_status = payload["validation"]["status"]
+    lines = [
+        "# Reviewed Volleyball Point Timestamps",
+        "",
+        f"Source: `{youtube_url}`",
+        f"Game window: `{game_start}` to `{game_end}`",
+        f"Point count: {len(rows)}",
+        f"Validation status: `{validation_status}`",
+        "",
+        "Rows include serve-start timestamps and rally-end timestamps. "
+        "The start-to-next-start duration is retained because it is useful for finding hidden serves or long resets.",
+        "",
+        "| Point | Start | End | Rally duration | Start-to-next-start | Reset gap | Status | Flags |",
+        "|---|---:|---:|---:|---:|---:|---|---|",
+    ]
+    for row in rows:
+        lines.append(
+            "| {point_id} | {source_start_timestamp} | {source_end_timestamp} | "
+            "{rally_duration_seconds}s | {duration_to_next_start_or_window_end_seconds}s | "
+            "{reset_gap_to_next_start_seconds}s | {manual_review_status} | {validation_flags} |".format(**row)
+        )
+    lines.extend(
+        [
+            "",
+            "## Validation Rules",
+            "",
+            f"- Flag rallies over {config.long_point_seconds:g}s as `review_long_rally`.",
+            f"- Count rallies at or under {config.short_rally_seconds:g}s as `short_point`.",
+            "- Preserve manual `review_*` statuses as validation flags.",
+            "- Flag short rallies inside long start-to-next-start buckets as possible hidden serve or long reset checks.",
+            f"- Expect at least {config.min_short_point_count} short points; target {config.target_short_point_count}.",
+            f"- Expect {config.min_point_count}-{config.max_point_count} total points for this game window.",
+        ]
+    )
+    if validation_summary:
+        lines.extend(
+            [
+                "",
+                "## Validation Summary",
+                "",
+                f"- Long rally ids: {', '.join(validation_summary['long_rally_ids']) or 'none'}",
+                f"- Short point ids: {', '.join(validation_summary['short_point_ids']) or 'none'}",
+                f"- Manual review required: {', '.join(validation_summary['manual_review_required_ids']) or 'none'}",
+                "- Possible hidden serve or long reset: "
+                f"{', '.join(validation_summary['possible_hidden_serve_or_long_reset_ids']) or 'none'}",
                 f"- Issues: {', '.join(validation_summary['issues']) or 'none'}",
             ]
         )
@@ -344,6 +581,35 @@ def store_youtube_point_timestamps(
     )
 
 
+def store_youtube_reviewed_point_timestamps(
+    youtube_url: str,
+    *,
+    game_start: str,
+    game_end: str,
+    out_dir: Path,
+    reviewed_points: Iterable[dict],
+    run_validation: bool = True,
+    validation_config: DurationValidationConfig = DurationValidationConfig(),
+) -> dict:
+    game_start_seconds = parse_timecode(game_start)
+    game_end_seconds = parse_timecode(game_end)
+    rows = build_reviewed_point_rows(
+        reviewed_points,
+        game_start_seconds=game_start_seconds,
+        game_end_seconds=game_end_seconds,
+    )
+    validation_summary = validate_reviewed_point_rows(rows, validation_config) if run_validation else None
+    return write_reviewed_outputs(
+        rows,
+        out_dir=out_dir,
+        youtube_url=youtube_url,
+        game_start=game_start,
+        game_end=game_end,
+        validation_summary=validation_summary,
+        config=validation_config,
+    )
+
+
 def parse_start_list(raw: str) -> list[float]:
     if not raw:
         return []
@@ -358,29 +624,23 @@ def main() -> None:
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--point-starts", default="", help="Comma-separated window offsets, such as 00:08.0,00:37.5")
     parser.add_argument("--from-csv", type=Path, help="Existing reviewed timestamp CSV")
+    parser.add_argument(
+        "--from-reviewed-csv",
+        type=Path,
+        help="Reviewed point CSV with start and end timestamps, confidence, and review status fields",
+    )
     parser.add_argument("--timestamp-column", default="auto", help="auto, window_offset, source_timestamp, or start_seconds")
     parser.add_argument("--skip-validation", action="store_true", help="Write outputs without running validation gates")
     parser.add_argument("--download-video", action="store_true", help="Download the YouTube video into out-dir/media")
     parser.add_argument("--cut-window", action="store_true", help="Cut the requested game window after download")
     parser.add_argument("--long-point-seconds", type=float, default=30.0)
     parser.add_argument("--short-point-seconds", type=float, default=18.0)
+    parser.add_argument("--short-rally-seconds", type=float, default=12.0)
     parser.add_argument("--min-short-points", type=int, default=3)
     parser.add_argument("--target-short-points", type=int, default=4)
     parser.add_argument("--min-points", type=int, default=25)
     parser.add_argument("--max-points", type=int, default=53)
     args = parser.parse_args()
-
-    starts = parse_start_list(args.point_starts)
-    if args.from_csv:
-        starts.extend(
-            read_point_starts_from_csv(
-                args.from_csv,
-                args.timestamp_column,
-                parse_timecode(args.game_start),
-            )
-        )
-    if not starts:
-        raise SystemExit("Provide --point-starts or --from-csv with reviewed serve-start timestamps.")
 
     if args.download_video:
         source = download_youtube_video(args.youtube_url, args.out_dir / "media")
@@ -390,20 +650,50 @@ def main() -> None:
     config = DurationValidationConfig(
         long_point_seconds=args.long_point_seconds,
         short_point_seconds=args.short_point_seconds,
+        short_rally_seconds=args.short_rally_seconds,
         min_short_point_count=args.min_short_points,
         target_short_point_count=args.target_short_points,
         min_point_count=args.min_points,
         max_point_count=args.max_points,
     )
-    outputs = store_youtube_point_timestamps(
-        args.youtube_url,
-        game_start=args.game_start,
-        game_end=args.game_end,
-        out_dir=args.out_dir,
-        point_starts=starts,
-        run_validation=not args.skip_validation,
-        validation_config=config,
-    )
+
+    if args.from_reviewed_csv:
+        reviewed_points = read_reviewed_points_from_csv(
+            args.from_reviewed_csv,
+            parse_timecode(args.game_start),
+        )
+        outputs = store_youtube_reviewed_point_timestamps(
+            args.youtube_url,
+            game_start=args.game_start,
+            game_end=args.game_end,
+            out_dir=args.out_dir,
+            reviewed_points=reviewed_points,
+            run_validation=not args.skip_validation,
+            validation_config=config,
+        )
+    else:
+        starts = parse_start_list(args.point_starts)
+        if args.from_csv:
+            starts.extend(
+                read_point_starts_from_csv(
+                    args.from_csv,
+                    args.timestamp_column,
+                    parse_timecode(args.game_start),
+                )
+            )
+        if not starts:
+            raise SystemExit(
+                "Provide --point-starts, --from-csv, or --from-reviewed-csv with reviewed timestamps."
+            )
+        outputs = store_youtube_point_timestamps(
+            args.youtube_url,
+            game_start=args.game_start,
+            game_end=args.game_end,
+            out_dir=args.out_dir,
+            point_starts=starts,
+            run_validation=not args.skip_validation,
+            validation_config=config,
+        )
     print(json.dumps(outputs, indent=2))
 
 
