@@ -1,9 +1,17 @@
-# VolleyFrame
+# project_roger
 
-A browser-based volleyball rotation and animation tool for building frame-by-frame court simulations.
+project_roger is a volleyball video breakdown tool. Its primary purpose is to turn games into useful point indexes: timestamps, point durations, and lightweight labels such as whether the team won or lost the point. The goal is to make it easy to cut clips, review points, and build better categorization over time.
+
+It can also support light coaching notes, but the center of the repo is the clip breakdown workflow: find the points, store them durably, and keep enough context to review them later.
 
 ## Features
 
+- YouTube game-window timestamp workflow
+- CSV, Markdown, and JSON point index outputs
+- Duration validation rules for suspiciously long points
+- Short-point candidate checks for serve-won or quick points
+- Existing reviewed point timestamp datasets
+- Light team coaching reports and review notes
 - Portrait volleyball court with visible net and attack lines
 - Six draggable players by default
 - Editable player names and roles

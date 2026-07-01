@@ -14,9 +14,9 @@
     "sharp": "^0.35.1",
     "vite": "latest"
   },
-  "name": "new-project",
+  "name": "project_roger",
   "version": "1.0.0",
-  "description": "A browser-based volleyball rotation and animation tool for building frame-by-frame court simulations.",
+  "description": "A volleyball video breakdown tool for point timestamps, durations, clip review, and light coaching notes.",
   "main": "index.js",
   "keywords": [],
   "author": "",
