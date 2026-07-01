@@ -4,7 +4,7 @@ Source video: `https://www.youtube.com/watch?v=tVv6Mq6Wd5k`
 
 Requested game window: `02:42:24` to `02:58:17`
 
-Local clip: `/Users/joashcolaco/Documents/New project/youtube_tVv6Mq6Wd5k_20260701/game_window_02-42-24_to_02-58-17.mp4`
+Local clip: `/Users/joashcolaco/Documents/project_roger/youtube_tVv6Mq6Wd5k_20260701/game_window_02-42-24_to_02-58-17.mp4`
 
 Audit method:
 - Reviewed 0.5-second frame sheets.

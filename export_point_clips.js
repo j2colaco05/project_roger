@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
 
-const repo = "/Users/joashcolaco/Documents/volleyball_video_analysis";
+const repo = "/Users/joashcolaco/Documents/project_roger";
 const runName = "mango_s6_w6_court1_part2";
 const outDir = path.join(__dirname, "volleyball_point_clips_mango_s6_w6");
 const ffmpeg = require(path.join(repo, "node_modules", "ffmpeg-static"));

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const sharp = require("/Users/joashcolaco/Documents/volleyball_video_analysis/node_modules/sharp");
+const sharp = require("/Users/joashcolaco/Documents/project_roger/node_modules/sharp");
 
 const root = path.join(__dirname, "fresh_half_second_scan_35-50");
 const csvPath = path.join(root, "point_timestamps_workflow_test_v2.csv");

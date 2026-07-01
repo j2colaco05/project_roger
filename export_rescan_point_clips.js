@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
 
-const ffmpeg = require("/Users/joashcolaco/Documents/volleyball_video_analysis/node_modules/ffmpeg-static");
+const ffmpeg = require("/Users/joashcolaco/Documents/project_roger/node_modules/ffmpeg-static");
 const source = "/Users/joashcolaco/Downloads/YTDown_YouTube_Mango-Season-6-Week-6-Court-1-Part2_Media_Hr4J-NVd3yI_001_1080p.mp4";
 const scanDir = path.join(__dirname, "fresh_half_second_scan_35-50");
 const csvPath = path.join(scanDir, "point_timestamps_0.5s_rescan.csv");

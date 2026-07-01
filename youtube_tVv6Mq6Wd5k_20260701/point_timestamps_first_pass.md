@@ -9,25 +9,25 @@ Requested game window: `02:42:24-02:58:17`
 Local working folder:
 
 ```text
-/Users/joashcolaco/Documents/New project/youtube_tVv6Mq6Wd5k_20260701
+/Users/joashcolaco/Documents/project_roger/youtube_tVv6Mq6Wd5k_20260701
 ```
 
 Downloaded full video:
 
 ```text
-/Users/joashcolaco/Documents/New project/youtube_tVv6Mq6Wd5k_20260701/full_android_tVv6Mq6Wd5k.mp4
+/Users/joashcolaco/Documents/project_roger/youtube_tVv6Mq6Wd5k_20260701/full_android_tVv6Mq6Wd5k.mp4
 ```
 
 Cut game-window clip:
 
 ```text
-/Users/joashcolaco/Documents/New project/youtube_tVv6Mq6Wd5k_20260701/game_window_02-42-24_to_02-58-17.mp4
+/Users/joashcolaco/Documents/project_roger/youtube_tVv6Mq6Wd5k_20260701/game_window_02-42-24_to_02-58-17.mp4
 ```
 
 0.5-second scan sheets:
 
 ```text
-/Users/joashcolaco/Documents/New project/youtube_tVv6Mq6Wd5k_20260701/sheets_0p5s
+/Users/joashcolaco/Documents/project_roger/youtube_tVv6Mq6Wd5k_20260701/sheets_0p5s
 ```
 
 ## First-Pass Point Starts

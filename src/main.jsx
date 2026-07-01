@@ -152,7 +152,7 @@ function drawCourt(ctx, project, positions, selectedId = null, viewport = VIEW) 
   ctx.setLineDash([]);
   ctx.fillStyle = 'rgba(255,255,255,.9)';
   ctx.font = '700 18px Inter, Arial';
-  ctx.fillText(project.title || 'VolleyFrame', COURT.pad, viewport.y + 22);
+  ctx.fillText(project.title || 'project_roger', COURT.pad, viewport.y + 22);
 
   project.players.forEach((player) => {
     const pos = positions[player.id];

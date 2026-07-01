@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
-const sharp = require("/Users/joashcolaco/Documents/volleyball_video_analysis/node_modules/sharp");
-const ffmpeg = require("/Users/joashcolaco/Documents/volleyball_video_analysis/node_modules/ffmpeg-static");
+const sharp = require("/Users/joashcolaco/Documents/project_roger/node_modules/sharp");
+const ffmpeg = require("/Users/joashcolaco/Documents/project_roger/node_modules/ffmpeg-static");
 
 const outDir = path.join(__dirname, "fresh_half_second_scan_35-50", "overhead_simulator");
 const frameDir = path.join(outDir, "frames");

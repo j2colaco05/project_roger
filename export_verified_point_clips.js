@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
 
-const repo = "/Users/joashcolaco/Documents/volleyball_video_analysis";
+const repo = "/Users/joashcolaco/Documents/project_roger";
 const runName = "mango_s6_w6_court1_part2";
 const outDir = process.argv[2];
 
