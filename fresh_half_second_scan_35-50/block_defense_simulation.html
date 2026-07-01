@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Block and Floor Defense Simulation</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0b1020; color: #f7f9fc; min-height: 100vh; display: grid; place-items: center; }
+    main { width: min(1100px, 100vw); padding: 18px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    h1 { margin: 0; font-size: 22px; letter-spacing: 0; }
+    .controls { display: flex; gap: 8px; align-items: center; }
+    button { border: 1px solid #49566f; background: #18223a; color: white; min-height: 38px; padding: 0 13px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+    button.active { background: #00a6a6; border-color: #45d7d7; }
+    button:focus-visible { outline: 3px solid #ffe066; outline-offset: 2px; }
+    .stage { position: relative; width: 100%; aspect-ratio: 16 / 9; min-height: 360px; overflow: hidden; border: 1px solid #3b4861; background: #d9c59c; }
+    svg { display: block; width: 100%; height: 100%; }
+    .court-line { stroke: #fff; stroke-width: 3; fill: none; }
+    .attack-line { stroke: #fff; stroke-width: 2; opacity: .75; }
+    .net { stroke: #172033; stroke-width: 9; }
+    .net-detail { stroke: #f3f5f7; stroke-width: 2; stroke-dasharray: 8 7; }
+    .player circle { stroke: #fff; stroke-width: 3; }
+    .player text { fill: #fff; text-anchor: middle; dominant-baseline: central; font-size: 16px; font-weight: 800; }
+    .navy circle { fill: #092c5c; }
+    .teal circle { fill: #008a91; }
+    .label { fill: #101828; text-anchor: middle; font-size: 14px; font-weight: 800; paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+    .zone { fill: #42b55b; opacity: 0; transition: opacity .35s; }
+    .zone.visible { opacity: .22; }
+    .blocked { fill: #e64b4b; opacity: 0; transition: opacity .35s; }
+    .blocked.visible { opacity: .32; }
+    .ball { fill: #ffe066; stroke: #18223a; stroke-width: 3; }
+    .status { position: absolute; left: 16px; top: 14px; max-width: 56%; padding: 10px 12px; background: rgba(11,16,32,.9); border-left: 4px solid #ffe066; font-size: 17px; font-weight: 750; }
+    .legend { display: flex; gap: 20px; margin-top: 10px; color: #cbd4e4; font-size: 14px; }
+    .key { display: inline-flex; align-items: center; gap: 7px; }
+    .swatch { width: 13px; height: 13px; border-radius: 2px; }
+    @media (max-width: 720px) {
+      main { padding: 10px; }
+      header { align-items: flex-start; flex-direction: column; }
+      .stage { min-height: 520px; aspect-ratio: 3 / 4; }
+      .status { max-width: calc(100% - 32px); font-size: 14px; }
+      .legend { flex-wrap: wrap; gap: 9px 15px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Block + Floor Defense</h1>
+    <div class="controls" aria-label="Simulation controls">
+      <button id="line" class="active">Block line</button>
+      <button id="cross">Block cross</button>
+      <button id="replay" title="Replay simulation">Replay</button>
+    </div>
+  </header>
+  <div class="stage">
+    <div id="status" class="status">Blocker calls LINE. Everyone moves on the call.</div>
+    <svg id="court" viewBox="0 0 1000 560" role="img" aria-label="Animated overhead volleyball defensive positioning">
+      <rect width="1000" height="560" fill="#d9c59c"/>
+      <rect x="90" y="30" width="820" height="500" class="court-line"/>
+      <line x1="90" y1="280" x2="910" y2="280" class="net"/>
+      <line x1="90" y1="280" x2="910" y2="280" class="net-detail"/>
+      <line x1="90" y1="175" x2="910" y2="175" class="attack-line"/>
+      <line x1="90" y1="385" x2="910" y2="385" class="attack-line"/>
+
+      <polygon id="blocked" class="blocked" points="210,145 230,278 135,520 60,520"/>
+      <ellipse id="z5" class="zone" cx="250" cy="475" rx="150" ry="72"/>
+      <ellipse id="z6" class="zone" cx="500" cy="480" rx="135" ry="65"/>
+      <ellipse id="z1" class="zone" cx="770" cy="410" rx="105" ry="75"/>
+
+      <g class="player teal" transform="translate(210 145)"><circle r="22"/><text>H</text></g>
+      <g class="player teal" transform="translate(500 105)"><circle r="19"/><text>S</text></g>
+      <g class="player teal" transform="translate(790 130)"><circle r="19"/><text>2</text></g>
+      <g class="player teal" transform="translate(285 225)"><circle r="19"/><text>5</text></g>
+      <g class="player teal" transform="translate(500 225)"><circle r="19"/><text>6</text></g>
+      <g class="player teal" transform="translate(720 225)"><circle r="19"/><text>1</text></g>
+
+      <g id="p4" class="player navy"><circle r="22"/><text>4</text></g>
+      <g id="p3" class="player navy"><circle r="22"/><text>3</text></g>
+      <g id="p2" class="player navy"><circle r="22"/><text>2</text></g>
+      <g id="p5" class="player navy"><circle r="22"/><text>5</text></g>
+      <g id="p6" class="player navy"><circle r="22"/><text>6</text></g>
+      <g id="p1" class="player navy"><circle r="22"/><text>1</text></g>
+
+      <text id="l2" class="label">BLOCKS LINE</text>
+      <text id="l5" class="label">DEEP CROSS</text>
+      <text id="l6" class="label">DEEP SEAM</text>
+      <text id="l1" class="label">TIP / DEFLECTION</text>
+      <circle id="ball" class="ball" r="11"/>
+    </svg>
+  </div>
+  <div class="legend">
+    <span class="key"><span class="swatch" style="background:#e64b4b"></span>Lane removed by block</span>
+    <span class="key"><span class="swatch" style="background:#42b55b"></span>Defender responsibility</span>
+    <span class="key"><span class="swatch" style="background:#092c5c"></span>Your team</span>
+  </div>
+</main>
+<script>
+  const $ = id => document.getElementById(id);
+  const players = ['p4','p3','p2','p5','p6','p1'].map($);
+  const labels = ['l2','l5','l6','l1'].map($);
+  const start = [[275,345],[500,340],[725,345],[235,455],[500,465],[765,455]];
+  const plans = {
+    line: {
+      end: [[300,350],[515,330],[248,305],[250,475],[505,475],[770,405]],
+      labels: ['BLOCKS LINE','DEEP CROSS','DEEP SEAM','TIP / DEFLECTION'],
+      labelPos: [[250,340],[250,525],[505,525],[770,455]],
+      polygon: '210,145 230,278 135,520 60,520',
+      ballEnd: [255,294],
+      steps: ['Blocker calls LINE. Everyone moves on the call.','The blocker seals the sideline.','Cross and seam defenders hold deep.','Right-back steps behind the block for tips.','The attack is forced into prepared defenders.']
+    },
+    cross: {
+      end: [[300,350],[515,330],[330,305],[285,410],[505,475],[785,475]],
+      labels: ['BLOCKS CROSS','SHORT ANGLE','DEEP SEAM','DEEP LINE'],
+      labelPos: [[340,340],[285,460],[505,525],[785,525]],
+      polygon: '210,145 230,278 690,520 835,520',
+      ballEnd: [775,510],
+      steps: ['Blocker calls CROSS. Everyone shifts together.','The blocker reaches into the hard angle.','Right-back stays deep on the exposed line.','Left-back moves in for the short angle.','The attack is funneled toward deep-line defense.']
+    }
+  };
+  let mode = 'line';
+  let run = 0;
+  const setPos = (el, xy) => el.setAttribute('transform', `translate(${xy[0]} ${xy[1]})`);
+  const placeLabels = plan => labels.forEach((el,i) => {
+    el.textContent = plan.labels[i]; el.setAttribute('x', plan.labelPos[i][0]); el.setAttribute('y', plan.labelPos[i][1]);
+  });
+  function replay() {
+    const token = ++run;
+    const plan = plans[mode];
+    players.forEach((p,i) => { p.style.transition = 'none'; setPos(p,start[i]); });
+    $('ball').style.transition = 'none'; $('ball').setAttribute('cx','210'); $('ball').setAttribute('cy','125');
+    $('blocked').classList.remove('visible'); ['z5','z6','z1'].forEach(id=>$(id).classList.remove('visible'));
+    placeLabels(plan); labels.forEach(x=>x.style.opacity='0');
+    $('status').textContent = plan.steps[0];
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      players.forEach((p,i) => { p.style.transition = 'transform 1.4s ease-in-out'; setPos(p,plan.end[i]); });
+      setTimeout(()=>{ if(token===run){ $('blocked').setAttribute('points',plan.polygon); $('blocked').classList.add('visible'); $('status').textContent=plan.steps[1]; }},700);
+      setTimeout(()=>{ if(token===run){ ['z5','z6','z1'].forEach(id=>$(id).classList.add('visible')); labels.forEach(x=>x.style.opacity='1'); $('status').textContent=plan.steps[2]; }},1500);
+      setTimeout(()=>{ if(token===run){ $('status').textContent=plan.steps[3]; }},2500);
+      setTimeout(()=>{ if(token===run){ $('ball').style.transition='cx 1.25s ease-in, cy 1.25s ease-in'; $('ball').setAttribute('cx',plan.ballEnd[0]); $('ball').setAttribute('cy',plan.ballEnd[1]); $('status').textContent=plan.steps[4]; }},3400);
+    }));
+  }
+  function choose(next) { mode=next; $('line').classList.toggle('active',next==='line'); $('cross').classList.toggle('active',next==='cross'); replay(); }
+  $('line').onclick=()=>choose('line'); $('cross').onclick=()=>choose('cross'); $('replay').onclick=replay;
+  replay();
+</script>
+</body>
+</html>

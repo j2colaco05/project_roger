@@ -1,0 +1,29 @@
+point_id,window_offset,source_timestamp,duration_to_next_start_or_window_end_seconds,serve_confirmation,audit_status,notes
+P001,00:08.0,02:42:32.0,29.5,serve visible,confirmed,Near-side serve visible shortly after the requested window begins.
+P002,00:37.5,02:43:01.5,29.5,serve visible,confirmed,Serve motion visible from near side.
+P003,01:07.0,02:43:31.0,31.0,serve visible,reviewed_long_span,31-second span reviewed; play/reset runs into next serve with no extra serve found.
+P004,01:38.0,02:44:02.0,62.5,serve visible,reviewed_long_span,Long rally plus reset; no separate serve found inside the span.
+P005,02:40.5,02:45:04.5,29.0,serve visible,confirmed,Serve visible from left side of frame.
+P006,03:09.5,02:45:33.5,51.5,serve visible,reviewed_long_span,Long rally plus reset; next serve routine starts at P007.
+P007,04:01.0,02:46:25.0,55.0,serve visible,adjusted_start,Start moved earlier from first pass so the clip includes the full serve routine before contact.
+P008,04:56.0,02:47:20.0,12.0,serve visible,split_from_long_gap,Missed serve found inside the old P007 long span.
+P009,05:08.0,02:47:32.0,39.0,serve visible,split_from_long_gap,Missed serve found inside the old P007 long span; span reviewed after split.
+P010,05:47.0,02:48:11.0,32.5,serve visible,reviewed_long_span,Borderline long span reviewed; no hidden serve found before next point.
+P011,06:19.5,02:48:43.5,13.5,serve visible,confirmed,Serve visible after reset.
+P012,06:33.0,02:48:57.0,51.5,serve visible,adjusted_start,Start moved earlier from first pass to include serve routine before contact.
+P013,07:24.5,02:49:48.5,21.5,serve visible,confirmed,Serve routine visible after reset.
+P014,07:46.0,02:50:10.0,33.5,serve visible,split_from_long_gap,Missed serve found inside the old P011 long span.
+P015,08:19.5,02:50:43.5,28.5,serve visible,split_from_long_gap,Missed serve found inside the old P011 long span.
+P016,08:48.0,02:51:12.0,18.5,serve visible,confirmed,Clear serve/reset boundary.
+P017,09:06.5,02:51:30.5,31.0,serve visible,reviewed_long_span,Borderline long span reviewed; no hidden serve found before next point.
+P018,09:37.5,02:52:01.5,57.5,serve visible,reviewed_long_span,Long rally plus reset; no separate serve found before next point.
+P019,10:35.0,02:52:59.0,35.5,serve visible,adjusted_start,Start moved slightly earlier to include serve routine.
+P020,11:10.5,02:53:34.5,16.5,serve visible,confirmed,Clear foreground serve toss/contact.
+P021,11:27.0,02:53:51.0,17.5,serve visible,confirmed,Quick serve after previous point.
+P022,11:44.5,02:54:08.5,23.0,serve visible,confirmed,Serve routine starts before contact; old critical gap was split after this point.
+P023,12:07.5,02:54:31.5,38.5,serve visible,split_from_long_gap,Missed serve found inside old critical P018 gap; span reviewed after split.
+P024,12:46.0,02:55:10.0,24.0,serve visible,split_from_long_gap,Missed serve found inside old critical P018 gap.
+P025,13:10.0,02:55:34.0,29.5,serve visible,split_from_long_gap,Missed serve found inside old critical P018 gap.
+P026,13:39.5,02:56:03.5,30.5,serve visible,adjusted_start,Start moved later from first pass to the actual serve routine instead of reset/huddle.
+P027,14:10.0,02:56:34.0,26.5,serve visible,adjusted_start,Start nudged earlier to include the serve setup.
+P028,14:36.5,02:57:00.5,76.5,serve visible,partial_end_window,Final first-pass split at 02:57:31 was removed because it was mid-rally; remaining time includes rally end and post-point/wrap-up before requested window end.

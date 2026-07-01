@@ -1,0 +1,44 @@
+point_id,start,end,duration_seconds,status,notes
+R001,00:35:10.5,00:35:24.0,13.5,complete,Fresh 0.5-second visual scan.
+R002,00:35:28.5,00:35:39.5,11.0,complete,Fresh 0.5-second visual scan.
+R003,00:35:56.5,00:36:04.0,7.5,complete,Previously missed in a long gap.
+R004,00:36:15.0,00:36:26.0,11.0,complete,Previously missed in a long gap.
+R005,00:36:32.0,00:36:37.5,5.5,complete,Previously missed short point.
+R006,00:36:54.5,00:37:02.5,8.0,complete,Serve timing refined from prior estimate.
+R007,00:37:13.5,00:37:22.0,8.5,complete,Fresh 0.5-second visual scan.
+R008,00:37:37.5,00:37:41.5,4.0,complete,Previously missed short point.
+R009,00:37:52.5,00:38:04.5,12.0,complete,Previously missed in a long gap.
+R010,00:38:23.5,00:38:27.0,3.5,complete,Previously missed short point.
+R011,00:38:37.5,00:38:46.0,8.5,complete,Previously missed in a long gap.
+R012,00:38:53.0,00:39:03.5,10.5,complete,Fresh 0.5-second visual scan.
+R013,00:39:14.0,00:39:22.5,8.5,complete,Fresh 0.5-second visual scan.
+R014,00:39:37.0,00:39:42.5,5.5,complete,Second serve from rejected long clip.
+R015,00:39:53.0,00:40:04.0,11.0,complete,Third serve from rejected long clip.
+R016,00:40:14.5,00:40:22.0,7.5,complete,Previously missed in a long gap.
+R017,00:40:32.0,00:40:49.0,17.0,complete,Fresh 0.5-second visual scan.
+R018,00:41:00.5,00:41:09.5,9.0,complete,Serve timing refined from prior estimate.
+R019,00:41:20.5,00:41:27.0,6.5,complete,Fresh 0.5-second visual scan.
+R020,00:41:34.5,00:41:39.5,5.0,complete,Short point preserved.
+R021,00:41:46.5,00:41:52.0,5.5,complete,Serve timing refined from prior estimate.
+R022,00:42:06.0,00:42:09.5,3.5,complete,Short point preserved.
+R023,00:42:17.0,00:42:22.0,5.0,complete,Short point preserved.
+R024,00:42:28.0,00:42:44.5,16.5,complete,Serve timing refined from prior estimate.
+R025,00:42:58.0,00:43:14.0,16.0,complete,Fresh 0.5-second visual scan.
+R026A,00:43:20.5,00:43:27.5,7.0,complete,Split after user identified another serve in the original R026 clip.
+R026B,00:43:32.5,00:43:42.5,10.0,complete,Second serve identified 13 seconds into the original review clip.
+R027,00:43:55.5,00:43:59.5,4.0,complete,Previously missed short point.
+R028,00:44:15.5,00:44:26.5,11.0,complete,Fresh 0.5-second visual scan.
+R029,00:44:49.0,00:45:07.0,18.0,complete,Serve timing refined from prior estimate.
+R030,00:45:26.5,00:45:32.0,5.5,complete,Short point preserved.
+R031,00:45:41.5,00:45:49.5,8.0,complete,Serve timing refined from prior estimate.
+R032A,00:46:09.5,00:46:18.5,9.0,complete,Split after user identified another serve in the original R032 clip.
+R032B,00:46:24.5,00:46:34.5,10.0,complete,Second serve identified 16 seconds into the original review clip.
+R033,00:46:47.5,00:46:55.0,7.5,complete,First serve from rejected multi-serve clip.
+R034,00:47:02.5,00:47:09.5,7.0,complete,Second serve from rejected multi-serve clip.
+R035,00:47:15.0,00:47:20.5,5.5,complete,Third serve from rejected multi-serve clip.
+R036,00:47:26.5,00:47:47.5,21.0,complete,Fourth serve from rejected multi-serve clip.
+R037,00:48:03.0,00:48:14.5,11.5,complete,Fifth serve from rejected multi-serve clip.
+R038,00:48:37.5,00:48:48.5,11.0,complete,Fresh 0.5-second visual scan.
+R039,00:49:00.0,00:49:05.0,5.0,complete,Second serve from prior multi-serve clip.
+R040,00:49:32.0,00:49:44.0,12.0,complete,Fresh 0.5-second visual scan.
+R041,00:49:55.0,00:50:00.0,5.0,partial,Point continues beyond requested review window.
